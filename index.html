@@ -214,29 +214,30 @@
             const loadingDiv = appendMessage('AI is generating response...', 'system-status');
 
             try {
-                // Pointing directly to the elite enterprise-level Qwen 72B engine framework
+                // Pointing directly to the updated global unified router endpoint architecture
                 const response = await fetch("https://huggingface.co", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ inputs: text })
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "Qwen/Qwen2.5-72B-Instruct",
+                        messages: [{ role: "user", content: text }],
+                        max_tokens: 500
+                    })
                 });
 
                 const data = await response.json();
                 loadingDiv.remove();
 
-                // Structural verification pass on the return array strings
-                if (Array.isArray(data) && data[0] && data[0].generated_text) {
-                    let reply = data[0].generated_text;
-                    
-                    // Clean up echo prompt patterns if model duplicates user input
-                    if (reply.startsWith(text)) {
-                        reply = reply.substring(text.length).trim();
-                    }
-                    appendMessage(reply || "Processed successfully, but returned blank data layout.", 'ai-msg');
-                } else if (data.error && data.error.includes("loading")) {
-                    appendMessage("The server model is warming up its processors. Please try again in 15 seconds.", 'ai-msg');
+                // Structural verification pass on the return array strings matching modern spec
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    let reply = data.choices[0].message.content;
+                    appendMessage(reply, 'ai-msg');
+                } else if (data.error && data.error.message) {
+                    appendMessage("Server Status: " + data.error.message, 'ai-msg');
                 } else {
-                    appendMessage("The AI server engine is currently under high traffic load. Please resend in a brief moment.", 'ai-msg');
+                    appendMessage("The AI server engine is currently under high traffic load. Please resend shortly.", 'ai-msg');
                 }
 
             } catch (error) {
@@ -260,3 +261,4 @@
     </script>
 </body>
 </html>
+
