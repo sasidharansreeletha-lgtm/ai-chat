@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mobile Nexus AI</title>
     <style>
-        /* Block text highlighting and copying */
+        /* Strict global resets and text protection mechanics */
         * {
             padding: 0;
             margin: 0;
@@ -13,7 +13,7 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         :root {
@@ -106,6 +106,7 @@
             word-wrap: break-word;
         }
 
+        /* Protect input fields and chat responses to ensure seamless select/reading rules */
         .message-content {
             user-select: text;
             -webkit-user-select: text;
@@ -167,7 +168,7 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
     <header>
         <h1>NEXUS AI ASSISTANT</h1>
@@ -176,7 +177,7 @@
 
     <div id="chat-container">
         <div class="message ai-msg">
-            <div class="message-content">Hello! I am your web-hosted enterprise AI engine. Ask me anything.</div>
+            <div class="message-content">Hello! I am your web-hosted enterprise AI engine. Your secure token route is cleared. Ask me anything.</div>
         </div>
     </div>
 
@@ -211,38 +212,38 @@
             appendMessage(text, 'user-msg');
             userInput.value = '';
 
-            const loadingDiv = appendMessage('AI is generating response...', 'system-status');
+            const loadingDiv = appendMessage('AI is thinking...', 'system-status');
 
             try {
-                // Pointing directly to the updated global unified router endpoint architecture
-                const response = await fetch("https://huggingface.co", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
+                // Official routing parameters utilizing your verified access token directly
+                const response = await fetch('https://openrouter.ai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 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',
+                        'HTTP-Referer': window.location.href, 
+                        'X-Title': 'Nexus Mobile App'
                     },
                     body: JSON.stringify({
-                        model: "Qwen/Qwen2.5-72B-Instruct",
-                        messages: [{ role: "user", content: text }],
-                        max_tokens: 500
+                        model: 'openrouter/free', 
+                        messages: [{ role: 'user', content: text }]
                     })
                 });
 
                 const data = await response.json();
                 loadingDiv.remove();
 
-                // Structural verification pass on the return array strings matching modern spec
                 if (data.choices && data.choices[0] && data.choices[0].message) {
-                    let reply = data.choices[0].message.content;
-                    appendMessage(reply, 'ai-msg');
-                } else if (data.error && data.error.message) {
-                    appendMessage("Server Status: " + data.error.message, 'ai-msg');
+                    appendMessage(data.choices[0].message.content, 'ai-msg');
+                } else if (data.error) {
+                    appendMessage('Server Response: ' + data.error.message, 'ai-msg');
                 } else {
-                    appendMessage("The AI server engine is currently under high traffic load. Please resend shortly.", 'ai-msg');
+                    appendMessage('Error: Engine returned an unparseable response frame.', 'ai-msg');
                 }
 
             } catch (error) {
                 loadingDiv.remove();
-                appendMessage('Network block detected. Ensure you are running this app from your public web URL link.', 'ai-msg');
+                appendMessage('Failed to sync packet connection to engine. Ensure your telephone is connected to active internet.', 'ai-msg');
                 console.error(error);
             }
         }
@@ -261,4 +262,3 @@
     </script>
 </body>
 </html>
-
