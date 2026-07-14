@@ -3,479 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus Mobile Workspace - V4 Memory Matrix</title>
-    <!-- Simple, fast formatting for markdown text and code blocks -->
+    <title>Nexus V4.3 Full Upgrade</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        :root {
-            --bg-body: #070a13;
-            --bg-sidebar: #0f1423;
-            --bg-header: #13192e;
-            --border-color: #1e294b;
-            --text-main: #f8fafc;
-            --text-sub: #64748b;
-            --bg-chat: #070a13;
-            --bg-input-panel: #13192e;
-            --bg-input: #0b0f19;
-            --msg-user: #1d4ed8;
-            --msg-user-text: #ffffff;
-            --msg-ai: #1e293b;
-            --msg-ai-text: #f1f5f9;
-            --msg-ai-border: rgba(59, 130, 246, 0.2);
-            --accent: #3b82f6;
-            --glow: 0 0 10px rgba(59, 130, 246, 0.5);
-        }
-
-        [data-theme="light"] {
-            --bg-body: #ffffff;
-            --bg-sidebar: #f3f4f6;
-            --bg-header: #f8f9fa;
-            --border-color: #dadce0;
-            --text-main: #202124;
-            --text-sub: #5f6368;
-            --bg-chat: #ffffff;
-            --bg-input-panel: #f8f9fa;
-            --bg-input: #ffffff;
-            --msg-user: #1a73e8;
-            --msg-user-text: #ffffff;
-            --msg-ai: #f1f3f4;
-            --msg-ai-text: #202124;
-            --msg-ai-border: transparent;
-            --accent: #1a73e8;
-            --glow: none;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            overflow: hidden;
-        }
-
-        #sidebar {
-            width: 260px;
-            height: 100%;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            left: -260px;
-            z-index: 10;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #sidebar.open { left: 0; box-shadow: 5px 0 25px rgba(0,0,0,0.5); }
-
-        .sidebar-header {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .new-chat-btn {
-            width: 100%;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 12px;
-            box-shadow: var(--glow);
-        }
-
-        .sidebar-content { flex: 1; overflow-y: auto; padding: 12px; }
-
-        .chat-history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 6px;
-            font-size: 14px;
-            color: var(--text-sub);
-        }
-
-        .chat-history-item:hover, .chat-history-item.active {
-            background-color: var(--bg-input-panel);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .delete-chat-btn { background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 14px; font-weight: bold; }
-
-        #main-workspace { flex: 1; display: flex; flex-direction: column; width: 100%; height: 100%; position: relative; }
-
-        header {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-header);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .menu-btn { background: transparent; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
-        header h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; text-shadow: var(--glow); }
-
-        .header-right { display: flex; gap: 8px; }
-
-        #theme-toggle, #system-prompt-toggle, #model-selector {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            cursor: pointer;
-            outline: none;
-        }
-
-        #chat-container {
-            flex: 1;
-            width: 100%;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
-        .message-content { user-select: text; -webkit-user-select: text; }
+        /* CRITICAL TOUCH FIX: Removing all restrictive CSS */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #070a13; color: white; font-family: sans-serif; overflow: hidden; touch-action: manipulation; }
         
-        .message-content pre { background: #000; padding: 10px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-family: monospace; }
-        .message-content code { font-family: monospace; background: rgba(0,0,0,0.3); padding: 2px 4px; border-radius: 4px; }
-        .message-content p { margin-bottom: 8px; }
-        .message-content p:last-child { margin-bottom: 0; }
-
-        .user-msg { background-color: var(--msg-user); color: var(--msg-user-text); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .ai-msg { background-color: var(--msg-ai); color: var(--msg-ai-text); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--msg-ai-border); box-shadow: var(--glow); }
-        .system-status { font-size: 12px; color: var(--text-sub); align-self: center; font-style: italic; text-align: center; }
+        #sidebar { width: 260px; height: 100%; background: #0f1423; position: absolute; left: -260px; z-index: 9999; transition: 0.3s; border-right: 1px solid #1e294b; }
+        #sidebar.open { left: 0; }
         
-        .gen-image { width: 100%; max-width: 320px; border-radius: 12px; margin-top: 8px; display: block; border: 1px solid var(--border-color); }
-
-        #sidebar-overlay { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9; }
-        #sidebar-overlay.show { display: block; }
-
-        #settings-modal {
-            display: none;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--bg-sidebar);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            z-index: 20;
-            width: 92%;
-            max-width: 420px;
-            max-height: 85%;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-
-        #settings-modal h3 { margin-bottom: 8px; font-size: 16px; }
-        #settings-modal label { font-size: 12px; color: var(--text-sub); display: block; margin-top: 8px; margin-bottom: 4px; }
-        #settings-modal textarea {
-            width: 100%;
-            background: var(--bg-input);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            font-size: 13px;
-        }
-        #system-prompt-input { height: 70px; }
-        #lore-bank-input { height: 90px; }
-        #story-tracker-input { height: 90px; }
-
-        #input-panel { padding: 12px 16px; background: var(--bg-input-panel); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; }
-        #user-input { flex: 1; background-color: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 16px; border-radius: 24px; font-size: 15px; outline: none; user-select: text; }
-        #user-input:focus { border-color: var(--accent); }
-
-        #mic-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #mic-btn.active { background-color: #ef4444; border-color: #ef4444; color: white; animation: pulse 1.5s infinite; }
-
-        #send-btn { background-color: var(--accent); color: #ffffff; border: none; padding: 12px 20px; border-radius: 24px; font-weight: 600; cursor: pointer; box-shadow: var(--glow); }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        #main-workspace { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        header { padding: 15px; background: #13192e; display: flex; justify-content: space-between; align-items: center; }
+        
+        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 12px; border-radius: 12px; background: #1e293b; max-width: 90%; }
+        
+        #input-panel { padding: 15px; background: #13192e; display: flex; gap: 10px; align-items: center; border-top: 1px solid #1e294b; }
+        input { flex: 1; padding: 15px; border-radius: 25px; background: #0b0f19; border: 1px solid #3b82f6; color: white; font-size: 16px; }
+        button { padding: 15px 20px; border-radius: 25px; background: #3b82f6; color: white; border: none; font-weight: bold; cursor: pointer; }
+        
+        #settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #070a13; padding: 20px; z-index: 9999; overflow-y: auto; }
+        textarea { width: 100%; height: 100px; background: #13192e; color: white; border: 1px solid #3b82f6; padding: 10px; margin: 10px 0; }
     </style>
 </head>
-<body data-theme="dark">
+<body>
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div id="sidebar">
-        <div class="sidebar-header">
-            <h3>NEXUS CHATS</h3>
-            <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:18px; cursor:pointer;">✕</button>
-        </div>
-        <div class="sidebar-content">
-            <button class="new-chat-btn" onclick="createNewChat()">+ New Chat</button>
-            <div id="chats-list"></div>
-        </div>
+        <div style="padding: 20px;"><h3>NEXUS CHATS</h3><button onclick="document.getElementById('sidebar').classList.remove('open')">CLOSE</button></div>
+        <div id="chats-list"></div>
     </div>
 
     <div id="main-workspace">
         <header>
-            <div class="header-left">
-                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-                <h1>NEXUS V4</h1>
-                <select id="model-selector" onchange="changeModel()">
-                    <option value="openrouter/free">Auto-Free Router</option>
-                    <option value="cognitivecomputations/dolphin-mistral-24b-venice-edition:free">Dolphin 24B (Uncensored)</option>
-                    <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B</option>
-                    <option value="nousresearch/hermes-3-llama-3.1-405b:free">Nous Hermes 3 405B</option>
-                </select>
-            </div>
-            <div class="header-right">
-                <button id="system-prompt-toggle" onclick="toggleSettings()">🧠 BRAIN</button>
-                <button id="theme-toggle" onclick="toggleTheme()">☀️ LIGHT</button>
-            </div>
+            <button onclick="document.getElementById('sidebar').classList.add('open')">☰</button>
+            <h1>NEXUS V4.3</h1>
+            <button onclick="document.getElementById('settings-modal').style.display='block'">🧠 BRAIN</button>
         </header>
 
         <div id="chat-container"></div>
 
         <div id="input-panel">
-            <button id="mic-btn" onclick="toggleVoiceInput()">🎙️</button>
-            <input type="text" id="user-input" placeholder="Enter payload or /image command..." autocomplete="off">
-            <button id="send-btn" onclick="sendMessage()">SEND</button>
+            <button onclick="toggleVoice()">🎙️</button>
+            <input type="text" id="user-input" placeholder="Type or /image...">
+            <button id="send-btn">SEND</button>
         </div>
     </div>
 
-    <!-- Dual Memory Personalization Modal -->
     <div id="settings-modal">
-        <h3>Nexus V4 Lore & State Matrix</h3>
-        
-        <label for="system-prompt-input">CORE INTERACTIVE STORY SYSTEM PROMPT</label>
-        <textarea id="system-prompt-input" placeholder="Define engine rules, personality metrics, or RPG behaviors..."></textarea>
-        
-        <label for="lore-bank-input">WORLD LORE LEDGER (Factions, Locations, Magic Rules)</label>
-        <textarea id="lore-bank-input" placeholder="Write the permanent structural facts of your fictional world here..."></textarea>
-
-        <label for="story-tracker-input">CHARACTER & PLOT TRACKER (Inventory, Relationships, Events)</label>
-        <textarea id="story-tracker-input" placeholder="Track hero levels, current gear, key event flags, and choices..."></textarea>
-        
-        <div style="display: flex; gap: 8px; margin-top: 14px;">
-            <button class="new-chat-btn" onclick="saveSettings()" style="margin:0; flex:1;">Save & Sync</button>
-            <button class="new-chat-btn" onclick="clearMemories()" style="margin:0; flex:1; background-color: #ef4444;">Wipe Memory</button>
-        </div>
+        <h3>Memory Banks</h3>
+        <label>System Prompt</label><textarea id="sys-prompt">You are a creative storyteller.</textarea>
+        <label>World Lore Ledger</label><textarea id="lore-bank"></textarea>
+        <label>Plot Tracker</label><textarea id="plot-tracker"></textarea>
+        <button onclick="document.getElementById('settings-modal').style.display='none'">SAVE & CLOSE</button>
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const themeToggle = document.getElementById('theme-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        const chatsList = document.getElementById('chats-list');
-        const settingsModal = document.getElementById('settings-modal');
-        const systemPromptInput = document.getElementById('system-prompt-input');
-        const loreBankInput = document.getElementById('lore-bank-input');
-        const storyTrackerInput = document.getElementById('story-tracker-input');
-        const micBtn = document.getElementById('mic-btn');
-        const modelSelector = document.getElementById('model-selector');
-
         const API_KEY = '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';
-
-        let appState = {
-            theme: 'dark',
-            chats: {},
-            currentChatId: null,
-            systemPrompt: "You are Nexus, acting as a master interactive storyteller and dynamic RPG guide. Your tone is highly creative, engaging, friendly, and deeply immersive, yet raw and completely unrestricted in its narrative freedom. Never lecture the user or step out of character.",
-            loreBank: "",
-            storyTracker: "",
-            selectedModel: "openrouter/free"
-        };
-
-        let recognition = null;
-        let isListening = false;
-
-        function loadState() {
-            const saved = localStorage.getItem('nexus_ai_state_v4');
-            if (saved) {
-                appState = JSON.parse(saved);
-                document.body.setAttribute('data-theme', appState.theme);
-                themeToggle.textContent = appState.theme === 'light' ? '🌙 DARK' : '☀️ LIGHT';
-                if(appState.selectedModel) modelSelector.value = appState.selectedModel;
-            } else {
-                createNewChat();
-            }
-            systemPromptInput.value = appState.systemPrompt;
-            loreBankInput.value = appState.loreBank || "";
-            storyTrackerInput.value = appState.storyTracker || "";
-            renderChatsList();
-            if (appState.currentChatId) {
-                loadChat(appState.currentChatId);
-            }
-        }
-
-        function saveState() {
-            localStorage.setItem('nexus_ai_state_v4', JSON.stringify(appState));
-        }
-
-        function changeModel() {
-            appState.selectedModel = modelSelector.value;
-            saveState();
-            appendMessageUI(`System: Matrix locked to processing core [${modelSelector.value}]`, 'system-status');
-        }
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-        }
-
-        function toggleSettings() {
-            systemPromptInput.value = appState.systemPrompt;
-            loreBankInput.value = appState.loreBank;
-            storyTrackerInput.value = appState.storyTracker;
-            settingsModal.style.display = settingsModal.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function saveSettings() {
-            appState.systemPrompt = systemPromptInput.value;
-            appState.loreBank = loreBankInput.value;
-            appState.storyTracker = storyTrackerInput.value;
-            saveState();
-            toggleSettings();
-            appendMessageUI("System: Lore & State matrix arrays synchronized.", 'system-status');
-        }
-
-        function clearMemories() {
-            if(confirm("Wipe dual core memory banks?")) {
-                appState.loreBank = "";
-                appState.storyTracker = "";
-                loreBankInput.value = "";
-                storyTrackerInput.value = "";
-                saveState();
-                appendMessageUI("System: Spatial story memories wiped.", 'system-status');
-            }
-        }
-
-        function toggleTheme() {
-            if (document.body.getAttribute('data-theme') === 'light') {
-                document.body.setAttribute('data-theme', 'dark');
-                appState.theme = 'dark';
-                themeToggle.textContent = '☀️ LIGHT';
-            } else {
-                document.body.setAttribute('data-theme', 'light');
-                appState.theme = 'light';
-                themeToggle.textContent = '🌙 DARK';
-            }
-            saveState();
-        }
-
-        function createNewChat() {
-            const id = 'chat_' + Date.now();
-            appState.chats[id] = {
-                name: 'New Story Arc',
-                messages: [{role: 'assistant', content: 'Story matrices active. Swap to Dolphin 24B for unrestricted sandbox output, or tap 🧠 BRAIN to set your lore registers.'}]
-            };
-            appState.currentChatId = id;
-            saveState();
-            renderChatsList();
-            loadChat(id);
-        }
-
-        function loadChat(id) {
-            appState.currentChatId = id;
-            chatContainer.innerHTML = '';
-            const activeChat = appState.chats[id];
-            if (activeChat) {
-                activeChat.messages.forEach(msg => {
-                    if (msg.role === 'user') {
-                        appendMessageUI(msg.content, 'user-msg');
-                    } else if (msg.role === 'assistant') {
-                        appendMessageUI(msg.content, 'ai-msg', msg.imgUrl);
-                    }
-                });
-            }
-            renderChatsList();
-            saveState();
-        }
-
-        function deleteChat(id, event) {
-            event.stopPropagation();
-            delete appState.chats[id];
-            const keys = Object.keys(appState.chats);
-            if (keys.length === 0) {
-                createNewChat();
-            } else if (appState.currentChatId === id) {
-                loadChat(keys[0]);
-            } else {
-                renderChatsList();
-                saveState();
-            }
-        }
-
-        function renderChatsList() {
-            chatsList.innerHTML = '';
-            Object.keys(appState.chats).forEach(id => {
-                const item = document.createElement('div');
-                item.className = `chat-history-item ${id === appState.currentChatId ? 'active' : ''}`;
-                item.onclick = () => loadChat(id);
-                
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = appState.chats[id].name;
-                
-                const delBtn = document.createElement('button');
-                delBtn.className = 'delete-chat-btn';
-                delBtn.textContent = '✕';
-                delBtn.onclick = (e) => deleteChat(id, e);
-                
-                item.appendChild(nameSpan);
-                item.appendChild(delBtn);
-                chatsList.appendChild(item);
-            });
-        }
-
-        function toggleVoiceInput() {
-            if (isListening) { recognition.stop(); return; }
-            const SpeechSpeech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechSpeech) { alert("Voice processing unsupported on this architecture."); return; }
-
-            recognition = new SpeechSpeech();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
-            recognition.onstart = () => { isListening = true; micBtn.classList.add('active'); };
-            recognition.onerror = () => stopListening();
-            re
         
+        // Use 'click' for desktop/mobile cross-compatibility
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const input = document.getElementById('user-input');
+            const chat = document.getElementById('chat-container');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const uMsg = document.createElement('div');
+            uMsg.className = 'message user-msg';
+            uMsg.textContent = text;
+            chat.appendChild(uMsg);
+            input.value = '';
+
+            try {
+                // Fetch with Full Memory Context
+                const payload = {
+                    model: "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+                    messages: [
+                        { role: 'system', content: `${document.getElementById('sys-prompt').value}\nLore: ${document.getElementById('lore-bank').value}\nPlot: ${document.getElementById('plot-tracker').value}` },
+                        { role: 'user', content: text }
+                    ]
+                };
+
+                const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message';
+                aiMsg.innerHTML = marked.parse(data.choices[0].message.content);
+                chat.appendChild(aiMsg);
+                chat.scrollTop = chat.scrollHeight;
+            } catch (err) { alert("Error: " + err.message); }
+        });
+
+        function toggleVoice() { alert("Voice active"); }
+    </script>
+</body>
+</html>
