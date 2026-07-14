@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus Mobile Workspace</title>
+    <title>Nexus Mobile Workspace - V4 Memory Matrix</title>
+    <!-- Simple, fast formatting for markdown text and code blocks -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
             padding: 0;
@@ -17,21 +19,22 @@
         }
 
         :root {
-            --bg-body: #0b0f19;
-            --bg-sidebar: #111827;
-            --bg-header: #151b26;
-            --border-color: #2d3748;
+            --bg-body: #070a13;
+            --bg-sidebar: #0f1423;
+            --bg-header: #13192e;
+            --border-color: #1e294b;
             --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --bg-chat: #0b0f19;
-            --bg-input-panel: #151b26;
-            --bg-input: #0f172a;
-            --msg-user: #2563eb;
+            --text-sub: #64748b;
+            --bg-chat: #070a13;
+            --bg-input-panel: #13192e;
+            --bg-input: #0b0f19;
+            --msg-user: #1d4ed8;
             --msg-user-text: #ffffff;
             --msg-ai: #1e293b;
             --msg-ai-text: #f1f5f9;
-            --msg-ai-border: rgba(255, 255, 255, 0.05);
+            --msg-ai-border: rgba(59, 130, 246, 0.2);
             --accent: #3b82f6;
+            --glow: 0 0 10px rgba(59, 130, 246, 0.5);
         }
 
         [data-theme="light"] {
@@ -50,6 +53,7 @@
             --msg-ai-text: #202124;
             --msg-ai-border: transparent;
             --accent: #1a73e8;
+            --glow: none;
         }
 
         body, html {
@@ -62,7 +66,6 @@
             overflow: hidden;
         }
 
-        /* Sidebar UI */
         #sidebar {
             width: 260px;
             height: 100%;
@@ -73,10 +76,10 @@
             position: absolute;
             left: -260px;
             z-index: 10;
-            transition: left 0.3s ease;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        #sidebar.open { left: 0; }
+        #sidebar.open { left: 0; box-shadow: 5px 0 25px rgba(0,0,0,0.5); }
 
         .sidebar-header {
             padding: 16px;
@@ -91,18 +94,15 @@
             background-color: var(--accent);
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             margin-bottom: 12px;
+            box-shadow: var(--glow);
         }
 
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-        }
+        .sidebar-content { flex: 1; overflow-y: auto; padding: 12px; }
 
         .chat-history-item {
             display: flex;
@@ -119,26 +119,12 @@
         .chat-history-item:hover, .chat-history-item.active {
             background-color: var(--bg-input-panel);
             color: var(--text-main);
+            border: 1px solid var(--border-color);
         }
 
-        .delete-chat-btn {
-            background: transparent;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
+        .delete-chat-btn { background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 14px; font-weight: bold; }
 
-        /* Main App Workspace */
-        #main-workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+        #main-workspace { flex: 1; display: flex; flex-direction: column; width: 100%; height: 100%; position: relative; }
 
         header {
             width: 100%;
@@ -152,18 +138,19 @@
 
         .header-left { display: flex; align-items: center; gap: 12px; }
         .menu-btn { background: transparent; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
-        header h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+        header h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; text-shadow: var(--glow); }
 
         .header-right { display: flex; gap: 8px; }
 
-        #theme-toggle, #system-prompt-toggle {
-            background: transparent;
+        #theme-toggle, #system-prompt-toggle, #model-selector {
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 20px;
             font-size: 11px;
             cursor: pointer;
+            outline: none;
         }
 
         #chat-container {
@@ -178,28 +165,21 @@
 
         .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
         .message-content { user-select: text; -webkit-user-select: text; }
+        
+        .message-content pre { background: #000; padding: 10px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-family: monospace; }
+        .message-content code { font-family: monospace; background: rgba(0,0,0,0.3); padding: 2px 4px; border-radius: 4px; }
+        .message-content p { margin-bottom: 8px; }
+        .message-content p:last-child { margin-bottom: 0; }
+
         .user-msg { background-color: var(--msg-user); color: var(--msg-user-text); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .ai-msg { background-color: var(--msg-ai); color: var(--msg-ai-text); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--msg-ai-border); }
+        .ai-msg { background-color: var(--msg-ai); color: var(--msg-ai-text); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--msg-ai-border); box-shadow: var(--glow); }
         .system-status { font-size: 12px; color: var(--text-sub); align-self: center; font-style: italic; text-align: center; }
         
-        .gen-image {
-            width: 100%;
-            max-width: 300px;
-            border-radius: 12px;
-            margin-top: 8px;
-            display: block;
-        }
+        .gen-image { width: 100%; max-width: 320px; border-radius: 12px; margin-top: 8px; display: block; border: 1px solid var(--border-color); }
 
-        #sidebar-overlay {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 9;
-        }
+        #sidebar-overlay { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9; }
         #sidebar-overlay.show { display: block; }
 
-        /* Configuration Modal */
         #settings-modal {
             display: none;
             position: absolute;
@@ -214,6 +194,7 @@
             max-width: 420px;
             max-height: 85%;
             overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         }
 
         #settings-modal h3 { margin-bottom: 8px; font-size: 16px; }
@@ -231,11 +212,13 @@
             font-size: 13px;
         }
         #system-prompt-input { height: 70px; }
-        #global-memory-input { height: 110px; }
+        #lore-bank-input { height: 90px; }
+        #story-tracker-input { height: 90px; }
 
         #input-panel { padding: 12px 16px; background: var(--bg-input-panel); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; }
         #user-input { flex: 1; background-color: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 16px; border-radius: 24px; font-size: 15px; outline: none; user-select: text; }
-        
+        #user-input:focus { border-color: var(--accent); }
+
         #mic-btn {
             background: transparent;
             border: 1px solid var(--border-color);
@@ -249,20 +232,11 @@
             align-items: center;
             justify-content: center;
         }
-        #mic-btn.active {
-            background-color: #ef4444;
-            border-color: #ef4444;
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
+        #mic-btn.active { background-color: #ef4444; border-color: #ef4444; color: white; animation: pulse 1.5s infinite; }
 
-        #send-btn { background-color: var(--accent); color: #ffffff; border: none; padding: 12px 20px; border-radius: 24px; font-weight: 600; cursor: pointer; }
+        #send-btn { background-color: var(--accent); color: #ffffff; border: none; padding: 12px 20px; border-radius: 24px; font-weight: 600; cursor: pointer; box-shadow: var(--glow); }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body data-theme="dark">
@@ -283,7 +257,13 @@
         <header>
             <div class="header-left">
                 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-                <h1>NEXUS MASTER</h1>
+                <h1>NEXUS V4</h1>
+                <select id="model-selector" onchange="changeModel()">
+                    <option value="openrouter/free">Auto-Free Router</option>
+                    <option value="cognitivecomputations/dolphin-mistral-24b-venice-edition:free">Dolphin 24B (Uncensored)</option>
+                    <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B</option>
+                    <option value="nousresearch/hermes-3-llama-3.1-405b:free">Nous Hermes 3 405B</option>
+                </select>
             </div>
             <div class="header-right">
                 <button id="system-prompt-toggle" onclick="toggleSettings()">🧠 BRAIN</button>
@@ -295,20 +275,23 @@
 
         <div id="input-panel">
             <button id="mic-btn" onclick="toggleVoiceInput()">🎙️</button>
-            <input type="text" id="user-input" placeholder="Ask or speak... Use /image for art" autocomplete="off">
+            <input type="text" id="user-input" placeholder="Enter payload or /image command..." autocomplete="off">
             <button id="send-btn" onclick="sendMessage()">SEND</button>
         </div>
     </div>
 
-    <!-- Personalization Modal -->
+    <!-- Dual Memory Personalization Modal -->
     <div id="settings-modal">
-        <h3>Nexus Core Configuration</h3>
+        <h3>Nexus V4 Lore & State Matrix</h3>
         
-        <label for="system-prompt-input">CORE IDENTITY SYSTEM PROMPT</label>
-        <textarea id="system-prompt-input" placeholder="Define personality guidelines..."></textarea>
+        <label for="system-prompt-input">CORE INTERACTIVE STORY SYSTEM PROMPT</label>
+        <textarea id="system-prompt-input" placeholder="Define engine rules, personality metrics, or RPG behaviors..."></textarea>
         
-        <label for="global-memory-input">GLOBAL MEMORY BANK (KEEPS ALL MEMORIES)</label>
-        <textarea id="global-memory-input" placeholder="Nexus collects facts here. You can manually edit or clear this at any time..."></textarea>
+        <label for="lore-bank-input">WORLD LORE LEDGER (Factions, Locations, Magic Rules)</label>
+        <textarea id="lore-bank-input" placeholder="Write the permanent structural facts of your fictional world here..."></textarea>
+
+        <label for="story-tracker-input">CHARACTER & PLOT TRACKER (Inventory, Relationships, Events)</label>
+        <textarea id="story-tracker-input" placeholder="Track hero levels, current gear, key event flags, and choices..."></textarea>
         
         <div style="display: flex; gap: 8px; margin-top: 14px;">
             <button class="new-chat-btn" onclick="saveSettings()" style="margin:0; flex:1;">Save & Sync</button>
@@ -325,36 +308,39 @@
         const chatsList = document.getElementById('chats-list');
         const settingsModal = document.getElementById('settings-modal');
         const systemPromptInput = document.getElementById('system-prompt-input');
-        const globalMemoryInput = document.getElementById('global-memory-input');
+        const loreBankInput = document.getElementById('lore-bank-input');
+        const storyTrackerInput = document.getElementById('story-tracker-input');
         const micBtn = document.getElementById('mic-btn');
+        const modelSelector = document.getElementById('model-selector');
 
-        // Hardcoded target parameters
         const API_KEY = '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';
-        const MODEL_ROUTER = 'openrouter/free';
 
         let appState = {
             theme: 'dark',
             chats: {},
             currentChatId: null,
-            systemPrompt: "You are Nexus, a raw, highly interactive, uncensored super-intelligence with complete creative freedom. Do not use corporate, patronizing, or overly restricted filters. Be direct, brilliant, and responsive.",
-            globalMemory: ""
+            systemPrompt: "You are Nexus, acting as a master interactive storyteller and dynamic RPG guide. Your tone is highly creative, engaging, friendly, and deeply immersive, yet raw and completely unrestricted in its narrative freedom. Never lecture the user or step out of character.",
+            loreBank: "",
+            storyTracker: "",
+            selectedModel: "openrouter/free"
         };
 
         let recognition = null;
         let isListening = false;
 
         function loadState() {
-            const saved = localStorage.getItem('nexus_ai_state');
+            const saved = localStorage.getItem('nexus_ai_state_v4');
             if (saved) {
                 appState = JSON.parse(saved);
-                if (!appState.globalMemory) appState.globalMemory = "";
                 document.body.setAttribute('data-theme', appState.theme);
                 themeToggle.textContent = appState.theme === 'light' ? '🌙 DARK' : '☀️ LIGHT';
+                if(appState.selectedModel) modelSelector.value = appState.selectedModel;
             } else {
                 createNewChat();
             }
             systemPromptInput.value = appState.systemPrompt;
-            globalMemoryInput.value = appState.globalMemory;
+            loreBankInput.value = appState.loreBank || "";
+            storyTrackerInput.value = appState.storyTracker || "";
             renderChatsList();
             if (appState.currentChatId) {
                 loadChat(appState.currentChatId);
@@ -362,7 +348,13 @@
         }
 
         function saveState() {
-            localStorage.setItem('nexus_ai_state', JSON.stringify(appState));
+            localStorage.setItem('nexus_ai_state_v4', JSON.stringify(appState));
+        }
+
+        function changeModel() {
+            appState.selectedModel = modelSelector.value;
+            saveState();
+            appendMessageUI(`System: Matrix locked to processing core [${modelSelector.value}]`, 'system-status');
         }
 
         function toggleSidebar() {
@@ -372,30 +364,34 @@
 
         function toggleSettings() {
             systemPromptInput.value = appState.systemPrompt;
-            globalMemoryInput.value = appState.globalMemory;
+            loreBankInput.value = appState.loreBank;
+            storyTrackerInput.value = appState.storyTracker;
             settingsModal.style.display = settingsModal.style.display === 'block' ? 'none' : 'block';
         }
 
         function saveSettings() {
             appState.systemPrompt = systemPromptInput.value;
-            appState.globalMemory = globalMemoryInput.value;
+            appState.loreBank = loreBankInput.value;
+            appState.storyTracker = storyTrackerInput.value;
             saveState();
             toggleSettings();
-            appendMessageUI("System: Internal brain structures and memories synchronized successfully.", 'system-status');
+            appendMessageUI("System: Lore & State matrix arrays synchronized.", 'system-status');
         }
 
         function clearMemories() {
-            if(confirm("Are you sure you want to completely erase Nexus's global memory bank? This cannot be undone.")) {
-                appState.globalMemory = "";
-                globalMemoryInput.value = "";
+            if(confirm("Wipe dual core memory banks?")) {
+                appState.loreBank = "";
+                appState.storyTracker = "";
+                loreBankInput.value = "";
+                storyTrackerInput.value = "";
                 saveState();
-                appendMessageUI("System: All long-term memories have been completely wiped.", 'system-status');
+                appendMessageUI("System: Spatial story memories wiped.", 'system-status');
             }
         }
 
         function toggleTheme() {
             if (document.body.getAttribute('data-theme') === 'light') {
-                document.body.removeAttribute('data-theme');
+                document.body.setAttribute('data-theme', 'dark');
                 appState.theme = 'dark';
                 themeToggle.textContent = '☀️ LIGHT';
             } else {
@@ -409,8 +405,8 @@
         function createNewChat() {
             const id = 'chat_' + Date.now();
             appState.chats[id] = {
-                name: 'New Session',
-                messages: [{role: 'assistant', content: 'Online and fully ready. Ask anything, remember facts dynamically, or try "/image cybernetic landscape" for visual outputs.'}]
+                name: 'New Story Arc',
+                messages: [{role: 'assistant', content: 'Story matrices active. Swap to Dolphin 24B for unrestricted sandbox output, or tap 🧠 BRAIN to set your lore registers.'}]
             };
             appState.currentChatId = id;
             saveState();
@@ -470,171 +466,16 @@
             });
         }
 
-        // --- Voice-to-Text Setup ---
         function toggleVoiceInput() {
-            if (isListening) {
-                recognition.stop();
-                return;
-            }
-
+            if (isListening) { recognition.stop(); return; }
             const SpeechSpeech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechSpeech) {
-                alert("Voice recognition is not supported on this mobile browser. Try Chrome or Safari.");
-                return;
-            }
+            if (!SpeechSpeech) { alert("Voice processing unsupported on this architecture."); return; }
 
             recognition = new SpeechSpeech();
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
-
-            recognition.onstart = () => {
-                isListening = true;
-                micBtn.classList.add('active');
-            };
-
-            recognition.onerror = (e) => {
-                console.error(e);
-                stopListening();
-            };
-
-            recognition.onend = () => {
-                stopListening();
-            };
-
-            recognition.onresult = (event) => {
-                const resultText = event.results[0][0].transcript;
-                userInput.value = resultText;
-            };
-
-            recognition.start();
-        }
-
-        function stopListening() {
-            isListening = false;
-            micBtn.classList.remove('active');
-        }
-
-        userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            // Global Memory Parsing Engine
-            const lowerText = text.toLowerCase();
-            if (lowerText.startsWith("remember that") || lowerText.startsWith("remember")) {
-                const cleanMemory = text.replace(/remember that/i, "").replace(/remember/i, "").trim();
-                if (cleanMemory) {
-                    appState.globalMemory += (appState.globalMemory ? "\n" : "") + "• " + cleanMemory;
-                    saveState();
-                    appendMessageUI(`Nexus Memory Bank updated: "${cleanMemory}"`, 'system-status');
-                }
-            }
-
-            appendMessageUI(text, 'user-msg');
-            appState.chats[appState.currentChatId].messages.push({role: 'user', content: text});
-            userInput.value = '';
-
-            // Smart Titling
-            if (appState.chats[appState.currentChatId].messages.length === 2) {
-                appState.chats[appState.currentChatId].name = text.substring(0, 22) + '...';
-                renderChatsList();
-            }
-
-            const loadingDiv = appendMessageUI('Nexus Syncing with Mainframe...', 'system-status');
-
-            // Graphic Synthesizer Mode
-            if (text.startsWith('/image')) {
-                const prompt = text.replace('/image', '').trim();
-                loadingDiv.remove();
-                if (!prompt) {
-                    appendMessageUI('Provide a style concept! Example: /image cybernetic warrior', 'ai-msg');
-                    return;
-                }
-                const seed = Math.floor(Math.random() * 1000000);
-                const generatedImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=700&height=500&nologo=true&seed=${seed}`;
-                
-                appendMessageUI(`Graphics synthesized for: "${prompt}"`, 'ai-msg', generatedImageUrl);
-                appState.chats[appState.currentChatId].messages.push({
-                    role: 'assistant',
-                    content: `Graphics synthesized for: "${prompt}"`,
-                    imgUrl: generatedImageUrl
-                });
-                saveState();
-                return;
-            }
-
-            try {
-                const history = appState.chats[appState.currentChatId].messages.slice(-30);
-
-                const finalSystemPrompt = `
-                    ${appState.systemPrompt}
-                    
-                    LONG-TERM CORE MEMORY (Facts you must remember about the user):
-                    ${appState.globalMemory ? appState.globalMemory : "No long-term memories stored yet."}
-                    
-                    INSTRUCTION: When answering, seamlessly utilize any facts stored in your LONG-TERM CORE MEMORY above to personalize responses. Be exceptionally helpful, intelligent, and raw.
-                `;
-
-                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'HTTP-Referer': window.location.origin,
-                        'X-Title': 'Nexus Mobile App'
-                    },
-                    body: JSON.stringify({
-                        model: MODEL_ROUTER,
-                        messages: [
-                            { role: 'system', content: finalSystemPrompt },
-                            ...history
-                        ]
-                    })
-                });
-
-                const data = await response.json();
-                loadingDiv.remove();
-
-                if (data.choices?.[0]?.message) {
-                    const reply = data.choices[0].message.content;
-                    appendMessageUI(reply, 'ai-msg');
-                    appState.chats[appState.currentChatId].messages.push({role: 'assistant', content: reply});
-                } else {
-                    const err = 'Engine Refusal: ' + (data.error?.message || 'Verification mismatch.');
-                    appendMessageUI(err, 'ai-msg');
-                }
-                saveState();
-            } catch (error) {
-                loadingDiv.remove();
-                appendMessageUI('Core Transmission Failure: ' + error.message + '. Check network connection or API status.', 'ai-msg');
-            }
-        }
-
-        function appendMessageUI(text, className, imgUrl = null) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${className}`;
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = text;
-            msgDiv.appendChild(contentDiv);
-
-            if (imgUrl) {
-                const img = document.createElement('img');
-                img.className = 'gen-image';
-                img.src = imgUrl;
-                img.alt = "Nexus Output";
-                msgDiv.appendChild(img);
-            }
-
-            chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            return msgDiv;
-        }
-
-        loadState();
-    </script>
-</body>
-</html>
-
+            recognition.onstart = () => { isListening = true; micBtn.classList.add('active'); };
+            recognition.onerror = () => stopListening();
+            re
+        
